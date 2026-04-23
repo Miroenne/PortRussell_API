@@ -50,14 +50,20 @@ exports.loginService = async (email, password) => {
 
         return  {token, user};
                            
+    }else{        
+        throw new Error("User not found");    
     }
 }
 
 exports.createUser = async (userName, password, email) => {
     const existingEmail = await usersRepository.findByEmail(email);
-
+    var createUserError = new Error();
     if(existingEmail){
-        throw new Error("Cet email est déjà utilisé")
+
+        createUserError.message = "Email already used";
+        createUserError.code = 409;      
+
+        throw createUserError;
     }
     
     const normalizedEmail = normalize(email);
@@ -68,7 +74,16 @@ exports.createUser = async (userName, password, email) => {
         password 
     }
 
-    return await usersRepository.create(newUser);
+    const createdUser = await usersRepository.create(newUser);
+
+    if(createdUser){
+        return createdUser;
+    }else{
+        createUserError.message = "User not created";
+        createUserError.code = 500;
+        throw createUserError;
+    }
+    
 }
 
 exports.getAllUsers = async () => {
@@ -77,7 +92,7 @@ exports.getAllUsers = async () => {
     if(users){
         return users;
     }else{
-        throw new Error("Aucun utilisateur trouvé")
+        throw new Error("No users found")
     }
 }
 
@@ -88,7 +103,7 @@ exports.getUserByEmail = async (email) => {
     if(user){
         return user;
     }else{
-        throw new Error("Aucun utilisateur trouvé")
+        throw new Error("User not found")
     }
 }
 
@@ -105,7 +120,7 @@ exports.updateUser = async (email, newEmail, newUserName, newPassword) => {
         }
         if(existingEmail){
         console.log ('Entrée dans la condition if("existingEmail")')
-        throw new Error("Cet email est déjà utilisé")
+        throw new Error("Email already used")
         }
     }
 
@@ -138,6 +153,8 @@ exports.updateUser = async (email, newEmail, newUserName, newPassword) => {
 
         return await usersRepository.update(user);
             
+    }else{
+        throw new Error("User not found")
     }
     
 }
@@ -152,5 +169,7 @@ exports.deleteUser = async (email) => {
     if(user){
         console.log(normalizedEmail)
         return await usersRepository.delete(normalizedEmail);
+    }else{
+        throw new Error("User not found")
     }
 }

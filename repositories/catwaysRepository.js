@@ -6,8 +6,10 @@ const catwaysRepository = {
         return await Catway.create(catway);
     },
     findByCatwayNumber: async (catwayNumber) => {
-        console.log('Entrée dans findByCatwayNumber')
+        console.log('Entrée dans findByCatwayNumber')        
         return await Catway.findOne({catwayNumber});
+        
+        
     },
     getAll: async () => {
         return await Catway.find();
@@ -17,7 +19,7 @@ const catwaysRepository = {
         return await catway.save();
     },
     delete: async(catwayNumber) => {
-        return await Catway.deleteOne({catwayNumber : catwayNumber});
+        return await Catway.deleteOne({catwayNumber : catwayNumber});  
     }
 }
 

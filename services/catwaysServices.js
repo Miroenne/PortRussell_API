@@ -65,5 +65,6 @@ exports.deleteCatway = async (catwayNumber) => {
     if(catway){
         return await catwaysRepository.delete(catwayNumber);
     }else{
-        throw new Error("Ce catway n'existe pas")    }
+        throw new Error("Ce catway n'existe pas")    
+    }
 }

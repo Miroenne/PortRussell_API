@@ -17,7 +17,8 @@ exports.loginController = async (req, res) => {
 
         res.status(200).json(user);
     }catch(error){
-        res.status(400).json(error);
+        res.status(404).json(error.message);
+
     }
 }
 
@@ -41,11 +42,9 @@ exports.createController = async (req, res) => {
     }catch(error){
         console.log("Erreur lors de la création de l'utilisateur : ", error)
         res.status(400).json({
-            message         : "Erreur lors de la création de l'utilisateur",
-            name            : error.name,
+            message         : "Erreur lors de la création de l'utilisateur",            
             code            : error.code,
-            errorMessage    : error.message,
-            errors          : error.errors
+            errorMessage    : error.message,            
         });    
     }
 }
