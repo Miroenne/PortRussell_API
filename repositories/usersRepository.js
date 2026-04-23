@@ -11,11 +11,12 @@ const userRepository = {
     getAll: async () => {
         return await User.find().select('-password');
     },
-    update: async() => {
-        return await User.save();
+    update: async(user) => {
+        console.log('Entrée dans update')
+        return await user.save();
     },
-    delete: async() => {
-        return await User.deleteOne();
+    delete: async(email) => {
+        return await User.deleteOne({email : email});
     }
 }
 

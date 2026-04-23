@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const cookie = require('cookie-parser');
-const userRepository = require('../repositories/userRepository');
+const userRepository = require('../repositories/usersRepository');
 const normalize = require('../middlewares/normalize'); 
 
 
@@ -53,9 +52,6 @@ exports.loginService = async (email, password) => {
                            
     }
 }
-    
-
-
 
 exports.createService = async (userName, password, email) => {
     const existingEmail = await userRepository.findByEmail(email);
@@ -63,15 +59,13 @@ exports.createService = async (userName, password, email) => {
     if(existingEmail){
         throw new Error("Cet email est déjà utilisé")
     }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
+    
     const normalizedEmail = normalize(email);
-
 
     const newUser = {
         userName,
         email : normalizedEmail,
-        password : hashedPassword
+        password 
     }
 
     return await userRepository.create(newUser);
@@ -79,4 +73,72 @@ exports.createService = async (userName, password, email) => {
 
 exports.getAllUsers = async () => {
     return await userRepository.getAll();
+}
+
+exports.getUserByEmail = async (email) => {
+    const normalizedEmail = normalize(email);
+    return await userRepository.findByEmail(normalizedEmail);
+}
+
+exports.updateUserService = async (email, newEmail, newUserName, newPassword) => {
+
+    console.log('Entrée dans updateUserService')
+
+    if(newEmail){
+        const normalizedNewEmail = normalize(newEmail);
+        const normalizedEmail = normalize(email);
+        
+        if(normalizedNewEmail !== normalizedEmail){
+           const existingEmail = await userRepository.findByEmail(normalizedNewEmail);
+        }
+        if(existingEmail){
+        console.log ('Entrée dans la condition if("existingEmail")')
+        throw new Error("Cet email est déjà utilisé")
+        }
+    }
+
+    const user = await userRepository.findByEmail(email);
+    console.log(user)
+
+    if(user){
+        
+        console.log('Entrée dans la condition if("user")')
+
+        if(newEmail){
+            user.email = normalise(newEmail);
+        }else{
+            user.email = user.email;
+        }
+
+        if(newUserName){
+            user.userName = newUserName;        
+        }else{
+            user.userName = user.userName;
+        }
+
+        if(newPassword){
+            user.password = newPassword;
+        }else{
+            user.password = user.password;
+        }
+        
+        console.log(user)
+
+        return await userRepository.update(user);
+            
+    }
+    
+}
+
+exports.deleteUserService = async (email) => {
+
+    const normalizedEmail = normalize(email);
+    const user = await userRepository.findByEmail(normalizedEmail);
+
+    console.log('normalized email : ', normalizedEmail)
+
+    if(user){
+        console.log(normalizedEmail)
+        return await userRepository.delete(normalizedEmail);
+    }
 }
