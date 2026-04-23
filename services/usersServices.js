@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const userRepository = require('../repositories/usersRepository');
+const usersRepository = require('../repositories/usersRepository');
 const normalize = require('../middlewares/normalize'); 
 
 
@@ -10,7 +10,7 @@ exports.loginService = async (email, password) => {
 
     const normalizedEmail = normalize(email);
 
-    const user = await userRepository.findByEmail(normalizedEmail);
+    const user = await usersRepository.findByEmail(normalizedEmail);
 
     console.log(user)
 
@@ -53,8 +53,8 @@ exports.loginService = async (email, password) => {
     }
 }
 
-exports.createService = async (userName, password, email) => {
-    const existingEmail = await userRepository.findByEmail(email);
+exports.createUser = async (userName, password, email) => {
+    const existingEmail = await usersRepository.findByEmail(email);
 
     if(existingEmail){
         throw new Error("Cet email est déjà utilisé")
@@ -68,19 +68,31 @@ exports.createService = async (userName, password, email) => {
         password 
     }
 
-    return await userRepository.create(newUser);
+    return await usersRepository.create(newUser);
 }
 
 exports.getAllUsers = async () => {
-    return await userRepository.getAll();
+    const users = await usersRepository.getAll();
+
+    if(users){
+        return users;
+    }else{
+        throw new Error("Aucun utilisateur trouvé")
+    }
 }
 
 exports.getUserByEmail = async (email) => {
     const normalizedEmail = normalize(email);
-    return await userRepository.findByEmail(normalizedEmail);
+    const user = await usersRepository.findByEmail(normalizedEmail);
+
+    if(user){
+        return user;
+    }else{
+        throw new Error("Aucun utilisateur trouvé")
+    }
 }
 
-exports.updateUserService = async (email, newEmail, newUserName, newPassword) => {
+exports.updateUser = async (email, newEmail, newUserName, newPassword) => {
 
     console.log('Entrée dans updateUserService')
 
@@ -89,7 +101,7 @@ exports.updateUserService = async (email, newEmail, newUserName, newPassword) =>
         const normalizedEmail = normalize(email);
         
         if(normalizedNewEmail !== normalizedEmail){
-           const existingEmail = await userRepository.findByEmail(normalizedNewEmail);
+           const existingEmail = await usersRepository.findByEmail(normalizedNewEmail);
         }
         if(existingEmail){
         console.log ('Entrée dans la condition if("existingEmail")')
@@ -97,7 +109,7 @@ exports.updateUserService = async (email, newEmail, newUserName, newPassword) =>
         }
     }
 
-    const user = await userRepository.findByEmail(email);
+    const user = await usersRepository.findByEmail(email);
     console.log(user)
 
     if(user){
@@ -124,21 +136,21 @@ exports.updateUserService = async (email, newEmail, newUserName, newPassword) =>
         
         console.log(user)
 
-        return await userRepository.update(user);
+        return await usersRepository.update(user);
             
     }
     
 }
 
-exports.deleteUserService = async (email) => {
+exports.deleteUser = async (email) => {
 
     const normalizedEmail = normalize(email);
-    const user = await userRepository.findByEmail(normalizedEmail);
+    const user = await usersRepository.findByEmail(normalizedEmail);
 
     console.log('normalized email : ', normalizedEmail)
 
     if(user){
         console.log(normalizedEmail)
-        return await userRepository.delete(normalizedEmail);
+        return await usersRepository.delete(normalizedEmail);
     }
 }

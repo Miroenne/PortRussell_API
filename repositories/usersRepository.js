@@ -1,6 +1,6 @@
 const User = require('../models/user');
 
-const userRepository = {
+const usersRepository = {
     create: async (user) => {
         return await User.create(user);
     },
@@ -20,4 +20,4 @@ const userRepository = {
     }
 }
 
-module.exports = userRepository;
+module.exports = usersRepository;

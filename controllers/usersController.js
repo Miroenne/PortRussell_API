@@ -36,7 +36,7 @@ exports.createController = async (req, res) => {
     const {userName, password, email} = req.body;
 
     try{
-        const user = await usersServices.createService(userName, password, email);
+        const user = await usersServices.createUser(userName, password, email);
         res.status(201).json(user);
     }catch(error){
         console.log("Erreur lors de la création de l'utilisateur : ", error)
@@ -82,7 +82,7 @@ exports.updateUserController = async (req, res) => {
 
 
     try{
-        const user = await usersServices.updateUserService(email, newEmail, newUserName, newPassword);
+        const user = await usersServices.updateUser(email, newEmail, newUserName, newPassword);
         res.status(200).json(user);
     }catch(error){
         res.status(501).json(error);
@@ -96,7 +96,7 @@ exports.deleteUserController = async (req, res) => {
     console.log('controller email : ',email)
 
     try{
-        const user = await usersServices.deleteUserService(email);
+        const user = await usersServices.deleteUser(email);
         res.status(200).json(user);
     }catch(error){
         res.status(501).json(error);
