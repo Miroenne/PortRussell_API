@@ -1,175 +1,165 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const usersRepository = require('../repositories/usersRepository');
-const normalize = require('../middlewares/normalize'); 
-
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const usersRepository = require("../repositories/usersRepository");
+const normalize = require("../utils/normalize");
 
 exports.loginService = async (email, password) => {
-
-    console.log('Entrée dans loginService')
+    console.log("Entrée dans loginService");
 
     const normalizedEmail = normalize(email);
 
     const user = await usersRepository.findByEmail(normalizedEmail);
 
-    console.log(user)
+    console.log(user);
 
-    if(user){
+    if (user) {
+        console.log("entrée dans la condition if");
+        console.log(user.password);
 
-        console.log("entrée dans la condition if")
-        console.log(user.password)
-
-        const isValid = bcrypt.compare(password, user.password)
-        console.log(isValid)
-        if(!isValid){
-            console.log("Mot de passe incorrect")
+        const isValid = bcrypt.compare(password, user.password);
+        console.log(isValid);
+        if (!isValid) {
+            console.log("Mot de passe incorrect");
             throw new Error("Mot de passe incorrect");
         }
-        
-        console.log("User found")
+
+        console.log("User found");
 
         delete user._doc.password;
 
-        console.log("User's password deleted")
+        console.log("User's password deleted");
 
         const expireIn = 24 * 60 * 60;
 
         const token = jwt.sign(
             {
-                user : user
+                user: user,
             },
             process.env.SECRET_KEY,
             {
-                expiresIn: expireIn
-            }
+                expiresIn: expireIn,
+            },
         );
 
-        console.log("Token generated")        
+        console.log("Token generated");
 
-        console.log("User logged successfully")
+        console.log("User logged successfully");
 
-        return  {token, user};
-                           
-    }else{        
-        throw new Error("User not found");    
+        return { token, user };
+    } else {
+        throw new Error("User not found");
     }
-}
+};
 
 exports.createUser = async (userName, password, email) => {
     const existingEmail = await usersRepository.findByEmail(email);
     var createUserError = new Error();
-    if(existingEmail){
-
+    if (existingEmail) {
         createUserError.message = "Email already used";
-        createUserError.code = 409;      
+        createUserError.code = 409;
 
         throw createUserError;
     }
-    
+
     const normalizedEmail = normalize(email);
 
     const newUser = {
         userName,
-        email : normalizedEmail,
-        password 
-    }
+        email: normalizedEmail,
+        password,
+    };
 
     const createdUser = await usersRepository.create(newUser);
 
-    if(createdUser){
+    if (createdUser) {
         return createdUser;
-    }else{
+    } else {
         createUserError.message = "User not created";
         createUserError.code = 500;
         throw createUserError;
     }
-    
-}
+};
 
 exports.getAllUsers = async () => {
     const users = await usersRepository.getAll();
 
-    if(users){
+    if (users) {
         return users;
-    }else{
-        throw new Error("No users found")
+    } else {
+        throw new Error("No users found");
     }
-}
+};
 
 exports.getUserByEmail = async (email) => {
     const normalizedEmail = normalize(email);
     const user = await usersRepository.findByEmail(normalizedEmail);
 
-    if(user){
+    if (user) {
         return user;
-    }else{
-        throw new Error("User not found")
+    } else {
+        throw new Error("User not found");
     }
-}
+};
 
 exports.updateUser = async (email, newEmail, newUserName, newPassword) => {
+    console.log("Entrée dans updateUserService");
 
-    console.log('Entrée dans updateUserService')
-
-    if(newEmail){
+    if (newEmail) {
         const normalizedNewEmail = normalize(newEmail);
         const normalizedEmail = normalize(email);
-        
-        if(normalizedNewEmail !== normalizedEmail){
-           const existingEmail = await usersRepository.findByEmail(normalizedNewEmail);
+
+        if (normalizedNewEmail !== normalizedEmail) {
+            const existingEmail =
+                await usersRepository.findByEmail(normalizedNewEmail);
         }
-        if(existingEmail){
-        console.log ('Entrée dans la condition if("existingEmail")')
-        throw new Error("Email already used")
+        if (existingEmail) {
+            console.log('Entrée dans la condition if("existingEmail")');
+            throw new Error("Email already used");
         }
     }
 
     const user = await usersRepository.findByEmail(email);
-    console.log(user)
+    console.log(user);
 
-    if(user){
-        
-        console.log('Entrée dans la condition if("user")')
+    if (user) {
+        console.log('Entrée dans la condition if("user")');
 
-        if(newEmail){
+        if (newEmail) {
             user.email = normalise(newEmail);
-        }else{
+        } else {
             user.email = user.email;
         }
 
-        if(newUserName){
-            user.userName = newUserName;        
-        }else{
+        if (newUserName) {
+            user.userName = newUserName;
+        } else {
             user.userName = user.userName;
         }
 
-        if(newPassword){
+        if (newPassword) {
             user.password = newPassword;
-        }else{
+        } else {
             user.password = user.password;
         }
-        
-        console.log(user)
+
+        console.log(user);
 
         return await usersRepository.update(user);
-            
-    }else{
-        throw new Error("User not found")
+    } else {
+        throw new Error("User not found");
     }
-    
-}
+};
 
 exports.deleteUser = async (email) => {
-
     const normalizedEmail = normalize(email);
     const user = await usersRepository.findByEmail(normalizedEmail);
 
-    console.log('normalized email : ', normalizedEmail)
+    console.log("normalized email : ", normalizedEmail);
 
-    if(user){
-        console.log(normalizedEmail)
+    if (user) {
+        console.log(normalizedEmail);
         return await usersRepository.delete(normalizedEmail);
-    }else{
-        throw new Error("User not found")
+    } else {
+        throw new Error("User not found");
     }
-}
+};

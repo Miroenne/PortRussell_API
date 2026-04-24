@@ -1,88 +1,125 @@
-const reservationsRepository = require('../repositories/reservationsRepository');
-const normalizeDate = require('../middlewares/normalizeDate');
+const reservationsRepository = require("../repositories/reservationsRepository");
+const buildError = require("../utils/errorFactory");
+const checkAvailability = require("../utils/checkReservations");
 
-const createReservationError = new Error();
-
-exports.createReservation = async (catwayNumber, clientName, boatName, startDate, endDate) => {
-
-    
-
-    const newStartDate = normalizeDate(startDate);
-    const newEndDate = normalizeDate(endDate);    
-
-    console.log(newStartDate instanceof Date)
-    console.log(newEndDate instanceof Date)
-    console.log(typeof newStartDate)
-    console.log(typeof newEndDate)
-
-
-    if(!newStartDate || !newEndDate){
-        console.log("Entrée dans la vérification des dates")
-        createReservationError.message = "Dates invalides";
-        createReservationError.code = 400;
-        throw createReservationError;
-    }
-
-    if(newEndDate.getTime() < newStartDate.getTime()){
-        console.log("Entrée dans la vérification de la date de fin")
-        createReservationError.message = "La date de fin doit être équivalente ou postérieure à la date de début";
-        createReservationError.code = 400;
-        throw createReservationError;
-    }
-
-    try{
-        const previousReservation = await reservationsRepository.checkPreviousReservation(catwayNumber, newStartDate, newEndDate);
-        console.log("Réservation précédente : ", previousReservation)
-        if(previousReservation){
-            console.log("previousReservation est présent")
-            createReservationError.message = "Le catway est déjà réservé pour cette période";
-            createReservationError.code = 409;
-            throw createReservationError;        
-        }
-    }catch(error){
-        console.log("Erreur lors de la vérification de la réservation précédente")
-        createReservationError.message = error.message;
-        createReservationError.code = error.code;
-        throw createReservationError;
-    }
-
-    console.log(startDate instanceof Date)
-    console.log(typeof endDate)
+exports.createReservation = async (
+    catwayNumber,
+    clientName,
+    boatName,
+    startDate,
+    endDate,
+) => {
+    console.log(startDate instanceof Date);
+    console.log(typeof endDate);
 
     const newReservation = {
-        catwayNumber,
+        catwayNumber: catwayNumber.catwayNumber,
         clientName,
         boatName,
-        startDate ,
-        endDate 
-    }
+        startDate,
+        endDate,
+    };
 
-    try{
-        const createdReservation = await reservationsRepository.create(newReservation);
+    await checkAvailability(catwayNumber, startDate, endDate);
+
+    try {
+        const createdReservation =
+            await reservationsRepository.create(newReservation);
         return createdReservation;
-    }catch(error){
-        createReservationError.message = "Reservation not created";
-        createReservationError.code = 500;
-        throw createReservationError;
+    } catch (error) {
+        throw buildError("Reservation not created", 500);
     }
-    
-}
+};
 
 exports.getAllReservations = async (catwayNumber) => {
-
-    
-    console.log(catwayNumber)
-
-
     const reservations = await reservationsRepository.getAll(catwayNumber);
-    console.log(reservations)
+    console.log(reservations);
 
-    if(reservations){
+    if (reservations) {
         return reservations;
-    }else{
-        createReservationError.message = "No reservations found";
-        createReservationError.code = 404;
-        throw createReservationError;
+    } else {
+        throw buimdError("No reservations found", 404);
     }
-    
-}
+};
+
+exports.getReservationById = async (catwayNumber, _id) => {
+    console.log("services _id : ", _id);
+    console.log("services catwayNumber : ", catwayNumber);
+    const _idReservation = _id._idReservation;
+    const reservedCatwayNumber = catwayNumber.catwayNumber;
+
+    const reservation = reservationsRepository.getReservation(
+        _id,
+        reservedCatwayNumber,
+    );
+
+    if (reservation) {
+        return reservation;
+    } else {
+        throw buildError("No reservation found", 404);
+    }
+};
+
+exports.updateReservation = async (
+    catwayNumber,
+    _id,
+    clientName,
+    boatName,
+    startDate,
+    endDate,
+) => {
+    const reservedCatwayNumber = catwayNumber.catwayNumber;
+
+    const actualReservation = await reservationsRepository.getReservation(
+        _id,
+        reservedCatwayNumber,
+    );
+
+    console.log(actualReservation);
+
+    if (!actualReservation) {
+        throw buildError("Reservation not found", 404);
+    }
+
+    console.log(actualReservation.startDate);
+    console.log(startDate);
+    console.log(actualReservation.endDate);
+    console.log(endDate);
+
+    if (
+        actualReservation.startDate.getTime() !== startDate.getTime() ||
+        actualReservation.endDate.getTime() !== endDate.getTime()
+    ) {
+        await checkAvailability(
+            { catwayNumber: reservedCatwayNumber },
+            startDate,
+            endDate,
+        );
+    }
+
+    actualReservation.clientName = clientName || actualReservation.clientName;
+    actualReservation.boatName = boatName || actualReservation.boatName;
+    actualReservation.startDate = startDate || actualReservation.startDate;
+    actualReservation.endDate = endDate || actualReservation.endDate;
+
+    try {
+        return await reservationsRepository.update(actualReservation);
+    } catch (error) {
+        throw buildError("Reservation not updated", 500);
+    }
+};
+
+exports.deleteReservation = async (_id, catwayNumber) => {
+    const reservedCatwayNumber = catwayNumber.catwayNumber;
+
+    const actualReservation = await reservationsRepository.getReservation(
+        _id,
+        reservedCatwayNumber,
+    );
+
+    if (!actualReservation) {
+        throw buildError("Reservation not found", 404);
+    }
+
+    return await reservationsRepository.delete(actualReservation);
+};

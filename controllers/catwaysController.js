@@ -3,7 +3,7 @@ const catwaysServices = require('../services/catwaysServices');
 exports.createController = async (req, res) => {
     const {catwayNumber, catwayType, catwayState} = req.body;
     console.log("Entrée dans createController")
-    try{
+    try{        
         const catway = await catwaysServices.createCatway(catwayNumber, catwayType, catwayState);
         res.status(201).json(catway);
     }catch(error){
@@ -23,6 +23,7 @@ exports.getAllCatwaysController = async (req, res) => {
 }
 
 exports.getCatwayByCatwayNumberController = async (req, res) => {
+    
     const {id} = req.params;    
     const catwayNumber = id;
     try{
