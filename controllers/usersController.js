@@ -18,7 +18,9 @@ exports.loginController = async (req, res) => {
 
         res.cookie("token", token, {
             httpOnly: true,
-            secure: true,
+            // sameSite: "none",
+            domain: "localhost, portrussell-api.onrender.com",
+            secure: false,
             path: "/",
         });
 
