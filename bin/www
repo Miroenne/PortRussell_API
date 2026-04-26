@@ -30,19 +30,26 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 /**
- * Normalize a port into a number, string, or false.
+ * Normalize a port value into a number, string, or `false`.
+ *
+ * @param {string} val - Raw port value.
+ * @returns {number|string|boolean} Parsed port, named pipe, or `false`.
  */
 
 function normalizePort(val) {
   var port = parseInt(val, 10);
 
   if (isNaN(port)) {
-    // named pipe
+    /**
+     * Accept named pipe values.
+     */
     return val;
   }
 
   if (port >= 0) {
-    // port number
+    /**
+     * Accept non-negative numeric ports.
+     */
     return port;
   }
 
@@ -50,7 +57,10 @@ function normalizePort(val) {
 }
 
 /**
- * Event listener for HTTP server "error" event.
+ * Handle HTTP server `error` events during startup.
+ *
+ * @param {NodeJS.ErrnoException} error - Startup error raised by Node.js HTTP server.
+ * @returns {void} Exits process for known startup errors, otherwise rethrows.
  */
 
 function onError(error) {
@@ -62,7 +72,9 @@ function onError(error) {
     ? 'Pipe ' + port
     : 'Port ' + port;
 
-  // handle specific listen errors with friendly messages
+  /**
+   * Handle specific listen errors with friendly messages.
+   */
   switch (error.code) {
     case 'EACCES':
       console.error(bind + ' requires elevated privileges');
@@ -78,7 +90,9 @@ function onError(error) {
 }
 
 /**
- * Event listener for HTTP server "listening" event.
+ * Handle HTTP server `listening` event.
+ *
+ * @returns {void} Logs the bound pipe or port through `debug`.
  */
 
 function onListening() {
