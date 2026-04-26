@@ -1,8 +1,19 @@
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = process.env.SECRET_KEY;
 
+/**
+ * Verify the JWT token from cookie/header and refresh it on success.
+ *
+ * @async
+ * @param {import('express').Request} req - Express request containing the token.
+ * @param {import('express').Response} res - Express response used to return auth errors and refreshed token.
+ * @param {import('express').NextFunction} next - Express next middleware callback.
+ * @returns {Promise<void>} Continues the middleware chain when token is valid.
+ */
 exports.verifyToken = async (req, res, next) => {
-    // Compatibility: token accepted from cookie, custom header, or Authorization header.
+    /**
+     * Compatibility behavior: token accepted from cookie, custom header, or Authorization header.
+     */
     let token = req.cookies.token || req.headers['x-access-token'] || req.headers['authorization'];
 
     if (token && token.startsWith('Bearer ')) {
@@ -20,9 +31,11 @@ exports.verifyToken = async (req, res, next) => {
             } else {
                req.decoded = decoded;
 
-                // Sliding session: issue a fresh token on every valid request
-                // and return it in the Authorization response header.
-                const expiresIn = 24 * 60 * 60; // 24h
+                /**
+                 * Sliding session: issue a fresh token on every valid request and
+                 * return it in the Authorization response header.
+                 */
+                const expiresIn = 24 * 60 * 60;
                 const newToken = jwt.sign(
                     {
                         user: decoded.user,

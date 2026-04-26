@@ -1,5 +1,13 @@
 const reservationsServices = require("../services/reservationsServices");
 
+/**
+ * Create a reservation for a given catway.
+ *
+ * @async
+ * @param {import("express").Request} req - Express request containing route params, payload, and validated dates.
+ * @param {import("express").Response} res - Express response used to return the created reservation.
+ * @returns {Promise<void>} Sends an HTTP response.
+ */
 exports.createController = async (req, res) => {
     const { clientName, boatName } = req.body;
     const id = req.params.id;
@@ -23,6 +31,14 @@ exports.createController = async (req, res) => {
     }
 };
 
+/**
+ * Retrieve all reservations for a given catway.
+ *
+ * @async
+ * @param {import("express").Request} req - Express request containing the catway id.
+ * @param {import("express").Response} res - Express response used to return reservations.
+ * @returns {Promise<void>} Sends an HTTP response.
+ */
 exports.getAllReservationsController = async (req, res) => {
     const id = req.params.id;
 
@@ -40,6 +56,14 @@ exports.getAllReservationsController = async (req, res) => {
     }
 };
 
+/**
+ * Retrieve one reservation by reservation id and catway id.
+ *
+ * @async
+ * @param {import("express").Request} req - Express request containing route parameters.
+ * @param {import("express").Response} res - Express response used to return the reservation.
+ * @returns {Promise<void>} Sends an HTTP response.
+ */
 exports.getReservationByIdController = async (req, res) => {
     const id = req.params.id;
     const idReservation = req.params.idReservation;
@@ -61,6 +85,14 @@ exports.getReservationByIdController = async (req, res) => {
     }
 };
 
+/**
+ * Update one reservation by reservation id and catway id.
+ *
+ * @async
+ * @param {import("express").Request} req - Express request containing route params, payload, and validated dates.
+ * @param {import("express").Response} res - Express response used to return updated reservation.
+ * @returns {Promise<void>} Sends an HTTP response.
+ */
 exports.updateReservationController = async (req, res) => {
     const id = req.params.id;
     const idReservation = req.params.idReservation;
@@ -86,6 +118,14 @@ exports.updateReservationController = async (req, res) => {
     }
 };
 
+/**
+ * Delete one reservation by reservation id and catway id.
+ *
+ * @async
+ * @param {import("express").Request} req - Express request containing route parameters.
+ * @param {import("express").Response} res - Express response used to return deletion result.
+ * @returns {Promise<void>} Sends an HTTP response.
+ */
 exports.deleteReservationController = async (req, res) => {
     const id = req.params.id;
     const idReservation = req.params.idReservation;

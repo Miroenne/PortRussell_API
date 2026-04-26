@@ -1,3 +1,9 @@
+/**
+ * Main Express application bootstrap.
+ * It wires middleware, routers, and database initialization.
+ *
+ * @module app
+ */
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');

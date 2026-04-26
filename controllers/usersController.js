@@ -1,5 +1,13 @@
 const usersServices = require('../services/usersServices');
 
+/**
+ * Authenticate a user and set the authentication token cookie.
+ *
+ * @async
+ * @param {import('express').Request} req - Express request containing login credentials.
+ * @param {import('express').Response} res - Express response used to return authenticated user data.
+ * @returns {Promise<void>} Sends an HTTP response.
+ */
 exports.loginController = async (req, res) => {
 
     console.log('Entrée dans loginController')
@@ -22,6 +30,14 @@ exports.loginController = async (req, res) => {
     }
 }
 
+/**
+ * Clear the authentication token cookie.
+ *
+ * @async
+ * @param {import('express').Request} req - Express request.
+ * @param {import('express').Response} res - Express response used to confirm logout.
+ * @returns {Promise<void>} Sends an HTTP response.
+ */
 exports.logoutController = async (req, res) => {
     
     res.clearCookie('token', 
@@ -33,6 +49,14 @@ exports.logoutController = async (req, res) => {
     res.status(200).json('logout_succeed');
 }
 
+/**
+ * Create a new user.
+ *
+ * @async
+ * @param {import('express').Request} req - Express request containing user payload.
+ * @param {import('express').Response} res - Express response used to return created user.
+ * @returns {Promise<void>} Sends an HTTP response.
+ */
 exports.createController = async (req, res) => {
     const {userName, password, email} = req.body;
 
@@ -49,6 +73,14 @@ exports.createController = async (req, res) => {
     }
 }
 
+/**
+ * Retrieve all users.
+ *
+ * @async
+ * @param {import('express').Request} req - Express request.
+ * @param {import('express').Response} res - Express response used to return users.
+ * @returns {Promise<void>} Sends an HTTP response.
+ */
 exports.getAllUsersController = async (req, res) => {
     try{
         const users = await usersServices.getAllUsers();
@@ -58,6 +90,14 @@ exports.getAllUsersController = async (req, res) => {
     }
 }
 
+/**
+ * Retrieve one user by email.
+ *
+ * @async
+ * @param {import('express').Request} req - Express request containing `email` route param.
+ * @param {import('express').Response} res - Express response used to return the user.
+ * @returns {Promise<void>} Sends an HTTP response.
+ */
 exports.getUserByEmailController = async (req, res) => {
     const {email} = req.params;
     try{
@@ -68,6 +108,14 @@ exports.getUserByEmailController = async (req, res) => {
     }
 }
 
+/**
+ * Update one user by email.
+ *
+ * @async
+ * @param {import('express').Request} req - Express request containing `email` route param and update payload.
+ * @param {import('express').Response} res - Express response used to return updated user.
+ * @returns {Promise<void>} Sends an HTTP response.
+ */
 exports.updateUserController = async (req, res) => {
     const newEmail = req.body.email;
     const newUserName = req.body.userName;
@@ -89,6 +137,14 @@ exports.updateUserController = async (req, res) => {
         
 }
 
+/**
+ * Delete one user by email.
+ *
+ * @async
+ * @param {import('express').Request} req - Express request containing `email` route param.
+ * @param {import('express').Response} res - Express response used to return deletion result.
+ * @returns {Promise<void>} Sends an HTTP response.
+ */
 exports.deleteUserController = async (req, res) => {
     const email = req.params.email;
 

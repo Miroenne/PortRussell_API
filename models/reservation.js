@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-/* Reservation's schema for the needed fields to create a reservation and save it in the database */
+/**
+ * Mongoose schema describing a reservation document.
+ */
 const Reservation = new Schema({
     catwayNumber:{
         type: String,
@@ -26,7 +28,9 @@ const Reservation = new Schema({
         required: [true, 'La date de fin de la réservation est requise']
     }
 }, {
-    /* Adding the fields createdAt and updatedAt in the database */
+    /**
+     * Automatically maintain `createdAt` and `updatedAt` timestamps.
+     */
     timestamps: true
 });
 

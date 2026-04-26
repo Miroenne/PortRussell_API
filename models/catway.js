@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-/* Catway's schema for the needed fields to create a catway and save it in the database */
+/**
+ * Mongoose schema describing a catway document.
+ */
 const Catway = new Schema({
     catwayNumber: {
         type: String,

@@ -1,10 +1,14 @@
 const mongoose = require ('mongoose');
 const Schema = mongoose.Schema;
 
-/* Import of bcrypt to hash and protect the password of the user */
+/**
+ * Library used to hash user passwords before persistence.
+ */
 const bcrypt = require('bcrypt');
 
-/* User's schema for the needed fields to create a user and save it in the database */
+/**
+ * Mongoose schema describing a user document.
+ */
 const User = new Schema({
     userName: {
         type: String,
@@ -21,25 +25,40 @@ const User = new Schema({
     password: {
         type: String,
         trim : true,
-        /* Setting the password to have a minimum length of 8 characters */
+        /**
+         * Enforce a minimum password length.
+         */
         minlength: [8, 'Le mot de passe doit contenir au moins 8 caractères']
     }    
 
 }, {
-    /* Adding the fields createdAt and updatedAt in the database */
+    /**
+     * Automatically maintain `createdAt` and `updatedAt` timestamps.
+     */
     timestamps: true
 });
 
-/* Hashing the password of the user when modified before saving it in the database */
+/**
+ * Hash the password before saving when it has been modified.
+ *
+ * @param {import('mongoose').CallbackWithoutResultAndOptionalError} next - Mongoose pre-save callback.
+ * @returns {Promise<void>} Resolves after password hash is applied.
+ */
 User.pre('save', async function(next) {
-    /* If the password is not modified, we move to the next middleware */
+    /**
+     * Skip hashing when the password field has not changed.
+     */
     if (!this.isModified('password')) {
         return ;
     }
     
-    /* Added salt to the password and hashed it with bcrypt */
+    /**
+     * Generate salt and hash password with bcrypt.
+     */
     const salt = await bcrypt.genSalt(10);
-    /* Hashing the password with the salt */
+    /**
+     * Persist hashed password on the current document.
+     */
     this.password = await bcrypt.hash(this.password, salt);       
     
 });

@@ -1,22 +1,33 @@
-// Load Mongoose library for MongoDB object modeling.
+/**
+ * Mongoose library used for MongoDB object modeling.
+ */
 const mongoose = require("mongoose");
 
-// Display the request to the database
+/**
+ * Enable query debug logs for development.
+ */
 mongoose.set("debug", true);
 
-// Connection options passed to mongoose.connect.
+/**
+ * Connection options passed to `mongoose.connect`.
+ */
 const clientOptions = {
     dbName: "Port_Russell",
 };
 console.log(process.env.DB_URL);
-// Initialize and export an async connection.
+
+/**
+ * Initialize the MongoDB client connection using Mongoose.
+ *
+ * @async
+ * @returns {Promise<void>} Resolves when the database connection is established.
+ * @throws {Error} Throws when the connection attempt fails.
+ */
 exports.initClientDbConnection = async () => {
     try {
-        // Connect to MongoDB using DB_URL from environment variables.
         await mongoose.connect(process.env.DB_URL, clientOptions);
         console.log("Connected");
     } catch (error) {
-        // Log and rethrow connection errors.
         console.error(error);
         throw error;
     }
