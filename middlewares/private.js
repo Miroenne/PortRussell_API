@@ -49,7 +49,11 @@ exports.verifyToken = async (req, res, next) => {
                     },
                 );
 
-                res.header("Authorization", "Bearer " + newToken);
+                res.cookie("token", newToken, {
+                    httpOnly: true,
+                    secure: true,
+                    path: "/",
+                });
 
                 next();
             }
