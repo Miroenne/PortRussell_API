@@ -44,14 +44,6 @@ exports.loginService = async (email, password) => {
             },
         );
 
-        res.cookie("token", token, {
-            httpOnly: true,
-            sameSite: "none",
-            domain: "localhost, portrussell-api.onrender.com",
-            secure: false,
-            path: "/",
-        });
-
         return { token, user };
     } else {
         throw buildError("User not found", 404);
