@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 const SECRET_KEY = process.env.SECRET_KEY;
 
 /**
@@ -14,22 +14,25 @@ exports.verifyToken = async (req, res, next) => {
     /**
      * Compatibility behavior: token accepted from cookie, custom header, or Authorization header.
      */
-    let token = req.cookies.token || req.headers['x-access-token'] || req.headers['authorization'];
+    let token =
+        req.cookies.token ||
+        req.headers["x-access-token"] ||
+        req.headers["authorization"];
 
-    if (token && token.startsWith('Bearer ')) {
+    if (token && token.startsWith("Bearer ")) {
         token = token.slice(7, token.length);
     }
 
-    if (!token){
-        return res.status(401).json('token_not_found');
+    if (!token) {
+        return res.status(401).json("token_not_found");
     }
 
     if (token) {
         jwt.verify(token, SECRET_KEY, (err, decoded) => {
             if (err) {
-                return res.status(401).json('token_not_valid');
+                return res.status(401).json("token_not_valid");
             } else {
-               req.decoded = decoded;
+                req.decoded = decoded;
 
                 /**
                  * Sliding session: issue a fresh token on every valid request and
@@ -43,15 +46,15 @@ exports.verifyToken = async (req, res, next) => {
                     SECRET_KEY,
                     {
                         expiresIn: expiresIn,
-                    }
+                    },
                 );
 
-                res.header('Authorization', 'Bearer ' + newToken);
+                res.header("Authorization", "Bearer " + newToken);
 
                 next();
             }
         });
     } else {
-        return res.status(401).json('token_required');
+        return res.status(401).json("token_required");
     }
-}
+};
