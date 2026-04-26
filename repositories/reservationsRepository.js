@@ -12,7 +12,6 @@ const reservationsRepository = {
      * @returns {Promise<Object>} Created reservation document.
      */
     create: async (reservation) => {
-        console.log("Entrée dans create");
         return await Reservation.create(reservation);
     },
     /**
@@ -25,8 +24,6 @@ const reservationsRepository = {
      * @returns {Promise<Object|null>} Overlapping reservation or `null`.
      */
     checkPreviousReservation: async (catwayNumber, startDate, endDate) => {
-        console.log("Entrée dans checkPreviousReservation");
-
         return await Reservation.findOne({
             catwayNumber,
             startDate: { $lt: endDate },
@@ -41,8 +38,6 @@ const reservationsRepository = {
      * @returns {Promise<Object[]>} List of reservations.
      */
     getAll: async (catwayNumber) => {
-        console.log(catwayNumber);
-        console.log("Entrée dans getAll");
         return await Reservation.find(catwayNumber);
     },
     /**
@@ -54,11 +49,7 @@ const reservationsRepository = {
      * @returns {Promise<Object|null>} Matching reservation document or `null`.
      */
     getReservation: async (_id, reservedCatwayNumber) => {
-        console.log("repo _id : ", _id);
-        console.log("repo reservedCatwayNumber : ", reservedCatwayNumber);
         const catwayNumber = reservedCatwayNumber;
-
-        console.log(typeof catwayNumber);
 
         return await Reservation.findOne({
             _id,
@@ -73,7 +64,6 @@ const reservationsRepository = {
      * @returns {Promise<Object>} Updated reservation document.
      */
     update: async (reservation) => {
-        console.log("Entrée dans update");
         return await reservation.save();
     },
     /**
@@ -84,7 +74,6 @@ const reservationsRepository = {
      * @returns {Promise<Object>} Mongoose deletion result.
      */
     delete: async (reservation) => {
-        console.log("Entrée dans delete");
         return await reservation.deleteOne();
     },
 };

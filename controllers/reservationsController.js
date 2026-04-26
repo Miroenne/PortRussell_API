@@ -68,8 +68,6 @@ exports.getReservationByIdController = async (req, res) => {
     const id = req.params.id;
     const idReservation = req.params.idReservation;
 
-    console.log("controller id :", id);
-    console.log("controller idReservation :", idReservation);
     try {
         const reservation = await reservationsServices.getReservationById(
             { catwayNumber: id },
