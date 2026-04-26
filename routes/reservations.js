@@ -1,3 +1,89 @@
+/**
+ * @swagger
+ * tags:
+ *   - name: Reservations
+ *     description: Catway reservation management
+ *
+ * /catways/{id}/reservations:
+ *   get:
+ *     tags: [Reservations]
+ *     summary: Get all reservations for a catway
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Reservations list
+ *   post:
+ *     tags: [Reservations]
+ *     summary: Create a reservation for a catway
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       201:
+ *         description: Reservation created
+ *
+ * /catways/{id}/reservations/{idReservation}:
+ *   get:
+ *     tags: [Reservations]
+ *     summary: Get one reservation
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: idReservation
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Reservation found
+ *   put:
+ *     tags: [Reservations]
+ *     summary: Update one reservation
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: idReservation
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Reservation updated
+ *   delete:
+ *     tags: [Reservations]
+ *     summary: Delete one reservation
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: idReservation
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Reservation deleted
+ */
+
 var express = require("express");
 var router = express.Router({ mergeParams: true });
 const reservationsController = require("../controllers/reservationsController");
