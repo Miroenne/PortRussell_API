@@ -1,4 +1,4 @@
-const User = require('../models/user');
+const User = require("../models/user");
 
 /**
  * Data access layer for user documents.
@@ -22,8 +22,7 @@ const usersRepository = {
      * @returns {Promise<Object|null>} Matching user document or `null`.
      */
     findByEmail: async (email) => {
-        console.log('Entrée dans findByEmail')
-        return await User.findOne({email});
+        return await User.findOne({ email });
     },
     /**
      * Retrieve all users without passwords.
@@ -32,7 +31,7 @@ const usersRepository = {
      * @returns {Promise<Object[]>} List of users.
      */
     getAll: async () => {
-        return await User.find().select('-password');
+        return await User.find().select("-password");
     },
     /**
      * Persist updates for an existing user document.
@@ -41,8 +40,7 @@ const usersRepository = {
      * @param {Object} user - Mongoose user document to save.
      * @returns {Promise<Object>} Updated user document.
      */
-    update: async(user) => {
-        console.log('Entrée dans update')
+    update: async (user) => {
         return await user.save();
     },
     /**
@@ -52,9 +50,9 @@ const usersRepository = {
      * @param {string} email - User email.
      * @returns {Promise<Object>} Mongoose deletion result.
      */
-    delete: async(email) => {
-        return await User.deleteOne({email : email});
-    }
-}
+    delete: async (email) => {
+        return await User.deleteOne({ email: email });
+    },
+};
 
 module.exports = usersRepository;

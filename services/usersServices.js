@@ -185,7 +185,6 @@ exports.deleteUser = async (email) => {
     const user = await usersRepository.findByEmail(normalizedEmail);
 
     if (user) {
-        console.log(normalizedEmail);
         return await usersRepository.delete(normalizedEmail);
     } else {
         throw buildError("User not found", 404);

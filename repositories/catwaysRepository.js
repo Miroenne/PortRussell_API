@@ -1,4 +1,4 @@
-const Catway = require('../models/catway');
+const Catway = require("../models/catway");
 
 /**
  * Data access layer for catway documents.
@@ -12,7 +12,6 @@ const catwaysRepository = {
      * @returns {Promise<Object>} Created catway document.
      */
     create: async (catway) => {
-        console.log('Entrée dans create')
         return await Catway.create(catway);
     },
     /**
@@ -23,10 +22,7 @@ const catwaysRepository = {
      * @returns {Promise<Object|null>} Matching catway document or `null`.
      */
     findByCatwayNumber: async (catwayNumber) => {
-        console.log('Entrée dans findByCatwayNumber')        
-        return await Catway.findOne({catwayNumber});
-        
-        
+        return await Catway.findOne({ catwayNumber });
     },
     /**
      * Retrieve all catway documents.
@@ -44,8 +40,7 @@ const catwaysRepository = {
      * @param {Object} catway - Mongoose catway document to save.
      * @returns {Promise<Object>} Updated catway document.
      */
-    update: async(catway) => {
-        console.log('Entrée dans update')
+    update: async (catway) => {
         return await catway.save();
     },
     /**
@@ -55,9 +50,9 @@ const catwaysRepository = {
      * @param {string} catwayNumber - Catway identifier.
      * @returns {Promise<Object>} Mongoose deletion result.
      */
-    delete: async(catwayNumber) => {
-        return await Catway.deleteOne({catwayNumber : catwayNumber});  
-    }
-}
+    delete: async (catwayNumber) => {
+        return await Catway.deleteOne({ catwayNumber: catwayNumber });
+    },
+};
 
 module.exports = catwaysRepository;

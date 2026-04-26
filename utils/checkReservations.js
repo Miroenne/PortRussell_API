@@ -26,9 +26,6 @@ async function checkAvailability(catwayNumber, startDate, endDate) {
             );
         }
     } catch (error) {
-        console.log(
-            "Erreur lors de la vérification des réservation existantes",
-        );
         throw buildError(error.message, error.code);
     }
 }
