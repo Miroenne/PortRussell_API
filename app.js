@@ -18,7 +18,7 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const mongodb = require("./db/mongoose.js");
-
+const allowedOrigins = process.env.ALLOWED_ORIGINS.split(",");
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const catwaysRouter = require("./routes/catways");
