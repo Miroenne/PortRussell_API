@@ -19,14 +19,17 @@ exports.loginController = async (req, res) => {
         res.cookie("token", token, {
             httpOnly: true,
             // sameSite: "none",
-            domain: "localhost, portrussell-api.onrender.com",
-            secure: false,
+            // secure: false,
             path: "/",
         });
 
         res.status(200).json(user);
     } catch (error) {
-        res.status(404).json(error.message);
+        res.status(400).json({
+            message: "Erreur lors de la modification de l'utilisateur",
+            code: error.code,
+            errorMessage: error.message,
+        });
     }
 };
 
@@ -82,7 +85,11 @@ exports.getAllUsersController = async (req, res) => {
         const users = await usersServices.getAllUsers();
         res.status(200).json(users);
     } catch (error) {
-        res.status(501).json(error);
+        res.status(400).json({
+            message: "Erreur lors de la modification de l'utilisateur",
+            code: error.code,
+            errorMessage: error.message,
+        });
     }
 };
 
@@ -100,7 +107,11 @@ exports.getUserByEmailController = async (req, res) => {
         const user = await usersServices.getUserByEmail(email);
         res.status(200).json(user);
     } catch (error) {
-        res.status(501).json(error);
+        res.status(400).json({
+            message: "Erreur lors de la modification de l'utilisateur",
+            code: error.code,
+            errorMessage: error.message,
+        });
     }
 };
 
@@ -118,6 +129,11 @@ exports.updateUserController = async (req, res) => {
     const newPassword = req.body.password;
     const email = req.params.email;
 
+    console.log(email);
+    console.log(newEmail);
+    console.log(newUserName);
+    console.log(newPassword);
+
     try {
         const user = await usersServices.updateUser(
             email,
@@ -127,7 +143,11 @@ exports.updateUserController = async (req, res) => {
         );
         res.status(200).json(user);
     } catch (error) {
-        res.status(501).json(error);
+        res.status(400).json({
+            message: "Erreur lors de la modification de l'utilisateur",
+            code: error.code,
+            errorMessage: error.message,
+        });
     }
 };
 
@@ -146,6 +166,10 @@ exports.deleteUserController = async (req, res) => {
         const user = await usersServices.deleteUser(email);
         res.status(200).json(user);
     } catch (error) {
-        res.status(501).json(error);
+        res.status(400).json({
+            message: "Erreur lors de la modification de l'utilisateur",
+            code: error.code,
+            errorMessage: error.message,
+        });
     }
 };

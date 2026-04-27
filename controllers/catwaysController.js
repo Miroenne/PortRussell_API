@@ -19,7 +19,11 @@ exports.createController = async (req, res) => {
         );
         res.status(201).json(catway);
     } catch (error) {
-        res.status(404).json(error.message);
+        res.status(400).json({
+            message: "Erreur lors de la modification de l'utilisateur",
+            code: error.code,
+            errorMessage: error.message,
+        });
     }
 };
 
@@ -36,7 +40,11 @@ exports.getAllCatwaysController = async (req, res) => {
         const catways = await catwaysServices.getAllCatways();
         res.status(200).json(catways);
     } catch (error) {
-        res.status(404).json(error.message);
+        res.status(400).json({
+            message: "Erreur lors de la modification de l'utilisateur",
+            code: error.code,
+            errorMessage: error.message,
+        });
     }
 };
 
@@ -56,7 +64,11 @@ exports.getCatwayByCatwayNumberController = async (req, res) => {
             await catwaysServices.getCatwayByCatwayNumber(catwayNumber);
         res.status(200).json(catway);
     } catch (error) {
-        res.status(404).json(error.message);
+        res.status(400).json({
+            message: "Erreur lors de la modification de l'utilisateur",
+            code: error.code,
+            errorMessage: error.message,
+        });
     }
 };
 
@@ -80,7 +92,11 @@ exports.updateCatwayController = async (req, res) => {
         );
         res.status(200).json(catway);
     } catch (error) {
-        res.status(404).json(error.message);
+        res.status(400).json({
+            message: "Erreur lors de la modification de l'utilisateur",
+            code: error.code,
+            errorMessage: error.message,
+        });
     }
 };
 
