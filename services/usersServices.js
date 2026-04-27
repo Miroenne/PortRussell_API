@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const usersRepository = require("../repositories/usersRepository");
 const normalize = require("../utils/normalize");
+const buildError = require("../utils/errorFactory");
 
 /**
  * @typedef {Object} AuthPayload
@@ -139,9 +140,10 @@ exports.updateUser = async (email, newEmail, newUserName, newPassword) => {
         if (normalizedNewEmail !== normalizedEmail) {
             const existingEmail =
                 await usersRepository.findByEmail(normalizedNewEmail);
-        }
-        if (existingEmail) {
-            throw buildError("Email already used", 409);
+
+            if (existingEmail) {
+                throw buildError("Email already used", 409);
+            }
         }
     }
 
@@ -149,7 +151,7 @@ exports.updateUser = async (email, newEmail, newUserName, newPassword) => {
 
     if (user) {
         if (newEmail) {
-            user.email = normalise(newEmail);
+            user.email = normalize(newEmail);
         } else {
             user.email = user.email;
         }

@@ -52,7 +52,6 @@ exports.verifyToken = async (req, res, next) => {
                 res.cookie("token", newToken, {
                     httpOnly: true,
                     // sameSite: "none",
-                    domain: "localhost, portrussell-api.onrender.com",
                     secure: false,
                     path: "/",
                 });
