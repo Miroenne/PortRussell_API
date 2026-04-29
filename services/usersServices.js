@@ -24,6 +24,9 @@ exports.loginService = async (email, password) => {
 
     const user = await usersRepository.findByEmail(normalizedEmail);
 
+    console.log("dbpassword: " + user.password);
+    console.log("password: " + password);
+
     if (user) {
         const isValid = bcrypt.compare(password, user.password);
 
