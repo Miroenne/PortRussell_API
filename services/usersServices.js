@@ -25,11 +25,11 @@ exports.loginService = async (email, password) => {
     const user = await usersRepository.findByEmail(normalizedEmail);
 
     console.log("dbpassword: " + user.password);
-    console.log("password: " + password);
+    console.log("password: " + password, "lenght: " + password.length);
 
     if (user) {
-        const isValid = bcrypt.compare(password, user.password);
-
+        const isValid = await bcrypt.compare(password, user.password);
+        console.log(isValid);
         if (!isValid) {
             throw buildError("Invalid password", 401);
         }
@@ -47,6 +47,11 @@ exports.loginService = async (email, password) => {
                 expiresIn: expireIn,
             },
         );
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            sameSite: "strict",
+        });
 
         return { token, user };
     } else {
