@@ -85,10 +85,10 @@ app.use(
 
 mongodb.initClientDbConnection();
 
-const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
+const allowedOrigins = /* ( */ process.env.ALLOWED_ORIGINS; /* || "")
     .split(",")
     .map((origin) => origin.trim())
-    .filter(Boolean);
+    .filter(Boolean)*/
 
 app.use(
     cors({
