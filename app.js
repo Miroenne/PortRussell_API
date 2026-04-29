@@ -18,7 +18,6 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const mongodb = require("./db/mongoose.js");
-const allowedOrigins = process.env.ALLOWED_ORIGINS;
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const catwaysRouter = require("./routes/catways");
@@ -85,6 +84,11 @@ app.use(
 );
 
 mongodb.initClientDbConnection();
+
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
 
 app.use(
     cors({
