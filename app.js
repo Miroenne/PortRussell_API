@@ -88,7 +88,11 @@ mongodb.initClientDbConnection();
 
 app.use(
     cors({
-        origin: process.env.ALLOWED_ORIGINS,
+        origin(origin, cb) {
+            if (!origin) return cb(null, true);
+            if (allowedOrigins.includes(origin)) return cb(null, true);
+            return cb(new Error("Not allowed by CORS"));
+        },
         allowedHeaders: ["Authorization", "Content-Type"],
         methods: ["GET", "POST", "PUT", "DELETE"],
         credentials: true,
