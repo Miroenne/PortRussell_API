@@ -1,4 +1,5 @@
 const usersServices = require("../services/usersServices");
+const cookie = require("cookie");
 
 /**
  * Authenticate a user and set the authentication token cookie.
@@ -18,13 +19,16 @@ exports.loginController = async (req, res) => {
 
         const isProd = process.env.NODE_ENV === "production";
 
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: isProd,
-            sameSite: isProd ? "none" : "lax",
-            path: "/",
-            maxAge: 24 * 60 * 60 * 1000,
-        });
+        res.setHeader(
+            "Set-Cookie",
+            cookie.serialize("token", token, {
+                httpOnly: true,
+                secure: isProd,
+                sameSite: isProd ? "none" : "lax",
+                path: "/",
+                maxAge: 24 * 60 * 60,
+            }),
+        );
 
         res.status(200).json(user);
     } catch (error) {
@@ -47,12 +51,16 @@ exports.loginController = async (req, res) => {
 exports.logoutController = async (req, res) => {
     const isProd = process.env.NODE_ENV === "production";
 
-    res.clearCookie("token", {
-        httpOnly: true,
-        secure: isProd,
-        sameSite: isProd ? "none" : "lax",
-        path: "/",
-    });
+    res.setHeader(
+        "Set-Cookie",
+        cookie.serialize("token", "", {
+            httpOnly: true,
+            secure: isProd,
+            sameSite: isProd ? "none" : "lax",
+            path: "/",
+            maxAge: 0,
+        }),
+    );
     res.status(200).json("logout_succeed");
 };
 

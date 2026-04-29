@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const SECRET_KEY = process.env.SECRET_KEY;
+const cookie = require("cookie");
 
 /**
  * Verify the JWT token from cookie/header and refresh it on success.
@@ -51,13 +52,16 @@ exports.verifyToken = async (req, res, next) => {
 
                 const isProd = process.env.NODE_ENV === "production";
 
-                res.cookie("token", newToken, {
-                    httpOnly: true,
-                    secure: isProd,
-                    sameSite: isProd ? "none" : "lax",
-                    path: "/",
-                    maxAge: 24 * 60 * 60 * 1000,
-                });
+                res.setHeader(
+                    "Set-Cookie",
+                    cookie.serialize("token", token, {
+                        httpOnly: true,
+                        secure: isProd,
+                        sameSite: isProd ? "none" : "lax",
+                        path: "/",
+                        maxAge: 24 * 60 * 60,
+                    }),
+                );
 
                 next();
             }
