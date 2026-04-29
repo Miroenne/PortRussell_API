@@ -21,7 +21,7 @@ exports.loginController = async (req, res) => {
         res.cookie("token", token, {
             httpOnly: true,
             secure: isProd,
-            sameSite: isProd ? "strict" : "lax",
+            sameSite: isProd ? "none" : "lax",
             path: "/",
             maxAge: 24 * 60 * 60 * 1000,
         });
@@ -47,7 +47,9 @@ exports.loginController = async (req, res) => {
 exports.logoutController = async (req, res) => {
     res.clearCookie("token", {
         httpOnly: true,
-        sameSite: "strict",
+        secure: isProd,
+        sameSite: isProd ? "none" : "lax",
+        path: "/",
     });
     res.status(200).json("logout_succeed");
 };
