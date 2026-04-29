@@ -49,9 +49,14 @@ exports.verifyToken = async (req, res, next) => {
                     },
                 );
 
-                res.cookie("token", newToken, {
+                const isProd = process.env.NODE_ENV === "production";
+
+                res.cookie("token", token, {
                     httpOnly: true,
-                    sameSite: "strict",
+                    secure: isProd,
+                    sameSite: isProd ? "strict" : "lax",
+                    path: "/",
+                    maxAge: 24 * 60 * 60 * 1000,
                 });
 
                 next();
