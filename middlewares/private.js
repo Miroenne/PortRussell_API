@@ -51,9 +51,7 @@ exports.verifyToken = async (req, res, next) => {
 
                 res.cookie("token", newToken, {
                     httpOnly: true,
-                    // sameSite: "none",
-                    secure: false,
-                    path: "/",
+                    sameSite: "strict",
                 });
 
                 next();
