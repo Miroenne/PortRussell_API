@@ -1,6 +1,7 @@
 const reservationsRepository = require("../repositories/reservationsRepository");
 const buildError = require("../utils/errorFactory");
-const checkAvailability = require("../utils/checkReservations");
+const checkCreateAvailability = require("../utils/checkReservations");
+const checkUpdateAvailability = require("../utils/checkReservations");
 
 /**
  * @typedef {Object} CatwayScope
@@ -35,17 +36,25 @@ exports.createReservation = async (
     startDate,
     endDate,
 ) => {
+    console.log(catwayNumber);
+
     const newReservation = {
-        catwayNumber: catwayNumber.catwayNumber,
+        catwayNumber,
         clientName,
         boatName,
         startDate,
         endDate,
     };
-
-    await checkAvailability(catwayNumber, startDate, endDate);
+    console.log("newReservation: " + newReservation.catwayNumber);
+    console.log("service catwayNumber :" + catwayNumber);
+    const avaibility = await checkCreateAvailability({
+        catwayNumber: catwayNumber,
+        startDate: startDate,
+        endDate: endDate,
+    });
 
     try {
+        console.log("renvoi au controller");
         return await reservationsRepository.create(newReservation);
     } catch (error) {
         throw buildError("Reservation not created", 500);
@@ -109,6 +118,7 @@ exports.getReservationById = async (catwayNumber, _id) => {
  * @throws {Error} Throws an error when reservation lookup or update fails.
  */
 exports.updateReservation = async (
+    reservedCatwayNumber,
     catwayNumber,
     _id,
     clientName,
@@ -116,11 +126,11 @@ exports.updateReservation = async (
     startDate,
     endDate,
 ) => {
-    const reservedCatwayNumber = catwayNumber.catwayNumber;
+    // const reservedCatwayNumber = catwayNumber.catwayNumber;
 
     const actualReservation = await reservationsRepository.getReservation(
         _id,
-        reservedCatwayNumber,
+        reservedCatwayNumber.reservedCatwayNumber,
     );
 
     if (!actualReservation) {
@@ -129,15 +139,22 @@ exports.updateReservation = async (
 
     if (
         actualReservation.startDate.getTime() !== startDate.getTime() ||
-        actualReservation.endDate.getTime() !== endDate.getTime()
+        actualReservation.endDate.getTime() !== endDate.getTime() ||
+        actualReservation.catwayNumber !== catwayNumber
     ) {
-        await checkAvailability(
-            { catwayNumber: reservedCatwayNumber },
+        await checkUpdateAvailability({
+            catwayNumber: catwayNumber.catwayNumber,
             startDate,
             endDate,
-        );
+            _id,
+        });
     }
 
+    if (catwayNumber.catwayNumber !== actualReservation.catwayNumber) {
+        actualReservation.catwayNumber = catwayNumber.catwayNumber;
+    } else {
+        actualReservation.catwayNumber = actualReservation.catwayNumber;
+    }
     actualReservation.clientName = clientName || actualReservation.clientName;
     actualReservation.boatName = boatName || actualReservation.boatName;
     actualReservation.startDate = startDate || actualReservation.startDate;

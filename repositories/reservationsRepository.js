@@ -24,6 +24,7 @@ const reservationsRepository = {
      * @returns {Promise<Object|null>} Overlapping reservation or `null`.
      */
     checkPreviousReservation: async (catwayNumber, startDate, endDate) => {
+        console.log("check previous catwayNumber: " + catwayNumber);
         return await Reservation.findOne({
             catwayNumber,
             startDate: { $lt: endDate },

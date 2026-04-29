@@ -5,13 +5,19 @@ const reservationsRepository = require("../repositories/reservationsRepository")
  * Ensure the requested reservation period is available for a catway.
  *
  * @async
+ * @param {string|Object} _id - Requested reservation id.
  * @param {{catwayNumber: string}} catwayNumber - Catway scope object.
  * @param {Date} startDate - Requested reservation start date.
  * @param {Date} endDate - Requested reservation end date.
  * @returns {Promise<void>} Resolves when no overlap exists.
  * @throws {Error} Throws when an overlapping reservation is found or lookup fails.
  */
-async function checkAvailability(catwayNumber, startDate, endDate) {
+async function checkUpdateAvailability({
+    _id,
+    catwayNumber,
+    startDate,
+    endDate,
+}) {
     try {
         const previousReservation =
             await reservationsRepository.checkPreviousReservation(
@@ -19,7 +25,11 @@ async function checkAvailability(catwayNumber, startDate, endDate) {
                 startDate,
                 endDate,
             );
-        if (previousReservation) {
+        if (previousReservation && previousReservation._id != _id) {
+            console.log(previousReservation);
+            console.log(previousReservation._id);
+            console.log(_id);
+            console.log((previousReservation._id = _id));
             throw buildError(
                 "Le catway est déjà réservé pour cette période",
                 409,
@@ -30,4 +40,39 @@ async function checkAvailability(catwayNumber, startDate, endDate) {
     }
 }
 
-module.exports = checkAvailability;
+module.exports = checkUpdateAvailability;
+
+/**
+ * Ensure the requested reservation period is available for a catway.
+ *
+ * @async
+ * @param {{catwayNumber: string}} catwayNumber - Catway scope object.
+ * @param {Date} startDate - Requested reservation start date.
+ * @param {Date} endDate - Requested reservation end date.
+ * @returns {Promise<void>} Resolves when no overlap exists.
+ * @throws {Error} Throws when an overlapping reservation is found or lookup fails.
+ */
+async function checkCreateAvailability({ catwayNumber, startDate, endDate }) {
+    console.log("check create catwayNumber: " + catwayNumber);
+
+    try {
+        const previousReservation =
+            await reservationsRepository.checkPreviousReservation(
+                catwayNumber,
+                startDate,
+                endDate,
+            );
+        console.log("previousReservation: " + previousReservation);
+        if (previousReservation) {
+            throw buildError(
+                "Le catway est déjà réservé pour cette période",
+                409,
+            );
+        }
+    } catch (error) {
+        console.log(error);
+        throw buildError(error.message, error.code);
+    }
+}
+
+module.exports = checkCreateAvailability;
