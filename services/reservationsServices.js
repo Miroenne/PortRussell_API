@@ -1,6 +1,7 @@
 const reservationsRepository = require("../repositories/reservationsRepository");
 const buildError = require("../utils/errorFactory");
-const checkAvailability = require("../utils/checkReservations");
+const checkCreateAvailability = require("../utils/checkReservations");
+const checkUpdateAvailability = require("../utils/checkReservations");
 
 /**
  * @typedef {Object} CatwayScope
@@ -35,24 +36,25 @@ exports.createReservation = async (
     startDate,
     endDate,
 ) => {
+    console.log(catwayNumber);
+
     const newReservation = {
-        catwayNumber: catwayNumber.catwayNumber,
+        catwayNumber,
         clientName,
         boatName,
         startDate,
         endDate,
     };
-
-    const avaibility = await checkAvailability(
-        catwayNumber,
-        startDate,
-        endDate,
-    );
-    if (!avaibility.ok) {
-        return avaibility;
-    }
+    console.log("newReservation: " + newReservation.catwayNumber);
+    console.log("service catwayNumber :" + catwayNumber);
+    const avaibility = await checkCreateAvailability({
+        catwayNumber: catwayNumber,
+        startDate: startDate,
+        endDate: endDate,
+    });
 
     try {
+        console.log("renvoi au controller");
         return await reservationsRepository.create(newReservation);
     } catch (error) {
         throw buildError("Reservation not created", 500);
@@ -140,7 +142,12 @@ exports.updateReservation = async (
         actualReservation.endDate.getTime() !== endDate.getTime() ||
         actualReservation.catwayNumber !== catwayNumber
     ) {
-        await checkAvailability(_id, catwayNumber, startDate, endDate);
+        await checkUpdateAvailability({
+            catwayNumber: catwayNumber.catwayNumber,
+            startDate,
+            endDate,
+            _id,
+        });
     }
 
     if (catwayNumber.catwayNumber !== actualReservation.catwayNumber) {
