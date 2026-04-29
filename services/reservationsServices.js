@@ -43,7 +43,14 @@ exports.createReservation = async (
         endDate,
     };
 
-    await checkAvailability(catwayNumber, startDate, endDate);
+    const avaibility = await checkAvailability(
+        catwayNumber,
+        startDate,
+        endDate,
+    );
+    if (!avaibility.ok) {
+        return avaibility;
+    }
 
     try {
         return await reservationsRepository.create(newReservation);
@@ -109,6 +116,7 @@ exports.getReservationById = async (catwayNumber, _id) => {
  * @throws {Error} Throws an error when reservation lookup or update fails.
  */
 exports.updateReservation = async (
+    reservedCatwayNumber,
     catwayNumber,
     _id,
     clientName,
@@ -116,11 +124,11 @@ exports.updateReservation = async (
     startDate,
     endDate,
 ) => {
-    const reservedCatwayNumber = catwayNumber.catwayNumber;
+    // const reservedCatwayNumber = catwayNumber.catwayNumber;
 
     const actualReservation = await reservationsRepository.getReservation(
         _id,
-        reservedCatwayNumber,
+        reservedCatwayNumber.reservedCatwayNumber,
     );
 
     if (!actualReservation) {
@@ -129,15 +137,17 @@ exports.updateReservation = async (
 
     if (
         actualReservation.startDate.getTime() !== startDate.getTime() ||
-        actualReservation.endDate.getTime() !== endDate.getTime()
+        actualReservation.endDate.getTime() !== endDate.getTime() ||
+        actualReservation.catwayNumber !== catwayNumber
     ) {
-        await checkAvailability(
-            { catwayNumber: reservedCatwayNumber },
-            startDate,
-            endDate,
-        );
+        await checkAvailability(_id, catwayNumber, startDate, endDate);
     }
 
+    if (catwayNumber.catwayNumber !== actualReservation.catwayNumber) {
+        actualReservation.catwayNumber = catwayNumber.catwayNumber;
+    } else {
+        actualReservation.catwayNumber = actualReservation.catwayNumber;
+    }
     actualReservation.clientName = clientName || actualReservation.clientName;
     actualReservation.boatName = boatName || actualReservation.boatName;
     actualReservation.startDate = startDate || actualReservation.startDate;

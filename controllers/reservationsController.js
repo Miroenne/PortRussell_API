@@ -94,12 +94,15 @@ exports.getReservationByIdController = async (req, res) => {
 exports.updateReservationController = async (req, res) => {
     const id = req.params.id;
     const idReservation = req.params.idReservation;
+
+    const catwayNumber = req.body;
     const { clientName, boatName } = req.body;
     const { startDate, endDate } = req.validatedDates || {};
 
     try {
         const reservation = await reservationsServices.updateReservation(
-            { catwayNumber: id },
+            { reservedCatwayNumber: id },
+            { catwayNumber: catwayNumber.catwayNumber },
             idReservation,
             clientName,
             boatName,
