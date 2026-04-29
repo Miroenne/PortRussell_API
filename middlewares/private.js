@@ -51,7 +51,7 @@ exports.verifyToken = async (req, res, next) => {
 
                 const isProd = process.env.NODE_ENV === "production";
 
-                res.cookie("token", token, {
+                res.cookie("token", newToken, {
                     httpOnly: true,
                     secure: isProd,
                     sameSite: isProd ? "none" : "lax",
