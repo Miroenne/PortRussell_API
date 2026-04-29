@@ -45,6 +45,8 @@ exports.loginController = async (req, res) => {
  * @returns {Promise<void>} Sends an HTTP response.
  */
 exports.logoutController = async (req, res) => {
+    const isProd = process.env.NODE_ENV === "production";
+
     res.clearCookie("token", {
         httpOnly: true,
         secure: isProd,
