@@ -48,11 +48,6 @@ exports.loginService = async (email, password) => {
             },
         );
 
-        res.cookie("token", token, {
-            httpOnly: true,
-            sameSite: "strict",
-        });
-
         return { token, user };
     } else {
         throw buildError("User not found", 404);

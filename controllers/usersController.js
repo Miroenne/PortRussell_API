@@ -16,9 +16,14 @@ exports.loginController = async (req, res) => {
             password,
         );
 
+        const isProd = process.env.NODE_ENV === "production";
+
         res.cookie("token", token, {
             httpOnly: true,
-            sameSite: "strict",
+            secure: isProd,
+            sameSite: isProd ? "strict" : "lax",
+            path: "/",
+            maxAge: 24 * 60 * 60 * 1000,
         });
 
         res.status(200).json(user);
