@@ -91,9 +91,9 @@ app.use(
         origin(origin, cb) {
             if (!origin) return cb(null, true);
             if (allowedOrigins.includes(origin)) return cb(null, true);
-            return cb(new Error("Not allowed by CORS"));
+            return cb(new Error(`Not allowed by CORS: ${origin}`));
         },
-        allowedHeaders: ["Authorization", "Content-Type"],
+        allowedHeaders: ["Authorization", "Content-Type", "x-access-token"],
         methods: ["GET", "POST", "PUT", "DELETE"],
         credentials: true,
     }),
