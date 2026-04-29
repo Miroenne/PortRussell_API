@@ -18,8 +18,8 @@ exports.loginController = async (req, res) => {
 
         res.cookie("token", token, {
             httpOnly: true,
-            // sameSite: "none",
-            // secure: false,
+            sameSite: "none",
+            secure: true,
             path: "/",
         });
 
