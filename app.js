@@ -88,7 +88,7 @@ mongodb.initClientDbConnection();
 
 app.use(
     cors({
-        origin: ["http://localhost:5500"],
+        origin: process.env.ALLOWED_ORIGINS,
         allowedHeaders: ["Authorization", "Content-Type"],
         methods: ["GET", "POST", "PUT", "DELETE"],
         credentials: true,
