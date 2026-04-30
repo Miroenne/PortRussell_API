@@ -144,11 +144,6 @@ exports.updateUserController = async (req, res) => {
     const newPassword = req.body.password;
     const email = req.params.email;
 
-    console.log(email);
-    console.log(newEmail);
-    console.log(newUserName);
-    console.log(newPassword);
-
     try {
         const user = await usersServices.updateUser(
             email,
