@@ -36,8 +36,6 @@ exports.createReservation = async (
     startDate,
     endDate,
 ) => {
-    console.log(catwayNumber);
-
     const newReservation = {
         catwayNumber,
         clientName,
@@ -45,8 +43,7 @@ exports.createReservation = async (
         startDate,
         endDate,
     };
-    console.log("newReservation: " + newReservation.catwayNumber);
-    console.log("service catwayNumber :" + catwayNumber);
+
     const avaibility = await checkCreateAvailability({
         catwayNumber: catwayNumber,
         startDate: startDate,
@@ -54,7 +51,6 @@ exports.createReservation = async (
     });
 
     try {
-        console.log("renvoi au controller");
         return await reservationsRepository.create(newReservation);
     } catch (error) {
         throw buildError("Reservation not created", 500);

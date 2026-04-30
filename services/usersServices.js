@@ -26,7 +26,7 @@ exports.loginService = async (email, password) => {
 
     if (user) {
         const isValid = await bcrypt.compare(password, user.password);
-        console.log(isValid);
+
         if (!isValid) {
             throw buildError("Invalid password", 401);
         }

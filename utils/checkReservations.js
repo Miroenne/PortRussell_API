@@ -26,10 +26,6 @@ async function checkUpdateAvailability({
                 endDate,
             );
         if (previousReservation && previousReservation._id != _id) {
-            console.log(previousReservation);
-            console.log(previousReservation._id);
-            console.log(_id);
-            console.log((previousReservation._id = _id));
             throw buildError(
                 "Le catway est déjà réservé pour cette période",
                 409,
@@ -53,8 +49,6 @@ module.exports = checkUpdateAvailability;
  * @throws {Error} Throws when an overlapping reservation is found or lookup fails.
  */
 async function checkCreateAvailability({ catwayNumber, startDate, endDate }) {
-    console.log("check create catwayNumber: " + catwayNumber);
-
     try {
         const previousReservation =
             await reservationsRepository.checkPreviousReservation(
@@ -62,7 +56,7 @@ async function checkCreateAvailability({ catwayNumber, startDate, endDate }) {
                 startDate,
                 endDate,
             );
-        console.log("previousReservation: " + previousReservation);
+
         if (previousReservation) {
             throw buildError(
                 "Le catway est déjà réservé pour cette période",

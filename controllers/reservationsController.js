@@ -11,7 +11,7 @@ const reservationsServices = require("../services/reservationsServices");
 exports.createController = async (req, res) => {
     const { clientName, boatName } = req.body;
     const catwayNumber = req.params.id;
-    console.log(catwayNumber);
+
     const { startDate, endDate } = req.validatedDates || {};
 
     try {
@@ -22,7 +22,7 @@ exports.createController = async (req, res) => {
             startDate,
             endDate,
         );
-        console.log("controller reservation: " + reservation);
+
         res.status(201).json(reservation);
     } catch (error) {
         res.status(400).json({
